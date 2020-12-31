@@ -6,7 +6,9 @@ Created on Wed Dec 30 19:52:45 2020
 @author: ashish
 """
 
-import pygame,sys,math
+import pygame,sys,math,random
+import pandas as pd
+
 
 
 
@@ -55,7 +57,8 @@ letters=[]
 start_x = round((800 -(radius*2+gap)*13)/2)
 start_y = 400
 A_asci = 65
-word="DEVELOPER"
+words_list=["DEVELOPER","INDIA","GOOD","BRIDGE","TEMPERATURE","PYTHON","SPEAKER","GLORIOUS","ARENA"]
+word=random.choice(words_list)
 guess=[]
 
 for i in range(26):
@@ -68,6 +71,7 @@ for i in range(26):
 while True:
     
     clock.tick(60)
+    draw()
     
     for event in pygame.event.get():
         
@@ -80,10 +84,12 @@ while True:
                 status=0
                 guess=[]
                 letters=[]
+                word=random.choice(words_list)
                 for i in range(26):
                     x = start_x + gap*2 +((radius *2 +gap)*(i%13))
                     y = start_y + ((i//13)) * (gap+radius*2)
                     letters.append([x,y,chr(A_asci+i),True])
+                
         
         if event.type == pygame.MOUSEBUTTONUP:
             position = pygame.mouse.get_pos()
@@ -115,5 +121,5 @@ while True:
         pygame.display.update()
         pygame.time.delay(3000)
         
-    draw()
+   
     

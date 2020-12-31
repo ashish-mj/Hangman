@@ -6,7 +6,7 @@ Created on Wed Dec 30 19:52:45 2020
 @author: ashish
 """
 
-import pygame,sys
+import pygame,sys,math
 
 pygame.init()
 window = pygame.display.set_mode((800,500))
@@ -17,9 +17,10 @@ def draw():
     window.fill(white)
     
     for letter in letters:
-        pygame.draw.circle(window,black,(letter[0],letter[1]),radius,3)
-        text = font.render(letter[2], 1, black)
-        window.blit(text,(letter[0]-text.get_width()/2,letter[1]-text.get_height()/2))
+        if letter[3]:
+            pygame.draw.circle(window,black,(letter[0],letter[1]),radius,3)
+            text = font.render(letter[2], 1, black)
+            window.blit(text,(letter[0]-text.get_width()/2,letter[1]-text.get_height()/2))
         
     window.blit(images[status],(150,100))
     pygame.display.update()
@@ -46,7 +47,7 @@ A_asci = 65
 for i in range(26):
     x = start_x + gap*2 +((radius *2 +gap)*(i%13))
     y = start_y + ((i//13)) * (gap+radius*2)
-    letters.append([x,y,chr(A_asci+i)])
+    letters.append([x,y,chr(A_asci+i),True])
 
 
 
@@ -59,6 +60,14 @@ while True:
         if event.type == pygame.QUIT:
             pygame.quit()
             sys.exit()
+        
+        if event.type == pygame.MOUSEBUTTONUP:
+            position = pygame.mouse.get_pos()
+            
+            for letter in letters:
+                dis = math.sqrt((position[0]-letter[0])**2+(position[1]-letter[1])**2)
+                if dis<radius:
+                    letter[3]=False
             
         
         

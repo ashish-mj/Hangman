@@ -8,13 +8,19 @@ Created on Wed Dec 30 19:52:45 2020
 
 import pygame,sys,math
 
-pygame.init()
-window = pygame.display.set_mode((800,500))
-pygame.display.set_caption('Hangman')
-clock= pygame.time.Clock()
+
 
 def draw():
     window.fill(white)
+    
+    display_word=""
+    for letter in word:
+        if letter in guess:
+            display_word += letter + " "
+        else:
+            display_word += "_ "
+    text = word_font.render(display_word, 1,black)
+    window.blit(text,(400,200))
     
     for letter in letters:
         if letter[3]:
@@ -27,9 +33,15 @@ def draw():
 
 
 
+pygame.init()
+window = pygame.display.set_mode((800,500))
+pygame.display.set_caption('Hangman')
+clock= pygame.time.Clock()
+
 white = (255,255,255)
 black = (0,0,0)
 font = pygame.font.Font('freesansbold.ttf', 20)
+word_font = pygame.font.Font('freesansbold.ttf', 30)
 
 images=[]
 for i in range(7):
@@ -43,6 +55,8 @@ letters=[]
 start_x = round((800 -(radius*2+gap)*13)/2)
 start_y = 400
 A_asci = 65
+word="DEVELOPER"
+guess=[]
 
 for i in range(26):
     x = start_x + gap*2 +((radius *2 +gap)*(i%13))
@@ -60,6 +74,16 @@ while True:
         if event.type == pygame.QUIT:
             pygame.quit()
             sys.exit()
+            
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_SPACE:
+                status=0
+                guess=[]
+                letters=[]
+                for i in range(26):
+                    x = start_x + gap*2 +((radius *2 +gap)*(i%13))
+                    y = start_y + ((i//13)) * (gap+radius*2)
+                    letters.append([x,y,chr(A_asci+i),True])
         
         if event.type == pygame.MOUSEBUTTONUP:
             position = pygame.mouse.get_pos()
@@ -68,7 +92,28 @@ while True:
                 dis = math.sqrt((position[0]-letter[0])**2+(position[1]-letter[1])**2)
                 if dis<radius:
                     letter[3]=False
-            
-        
+                    guess.append(letter[2])
+                    
+                    if letter[2] not in word:
+                        status+=1
+    
+    won = True
+    for letter in word:
+        if letter not in guess:
+            won = False
+            break
+    if won:
+        window.fill(white)
+        text = word_font.render("YOU WON! ENTER SPACE TO START AGAIN",1,black)
+        window.blit(text,(800/2-text.get_width()/2, 500/2-text.get_height()/2))
+        pygame.display.update()
+        pygame.time.delay(3000)
+    if status==6:
+        window.fill(white)
+        text = word_font.render("YOU LOST! ENTER SPACE TO START AGAIN",1,black)
+        window.blit(text,(800/2-text.get_width()/2, 500/2-text.get_height()/2))
+        pygame.display.update()
+        pygame.time.delay(3000)
         
     draw()
+    

@@ -13,13 +13,42 @@ window = pygame.display.set_mode((800,500))
 pygame.display.set_caption('Hangman')
 clock= pygame.time.Clock()
 
-white=(255,255,255)
+def draw():
+    window.fill(white)
+    
+    for letter in letters:
+        pygame.draw.circle(window,black,(letter[0],letter[1]),radius,3)
+        text = font.render(letter[2], 1, black)
+        window.blit(text,(letter[0]-text.get_width()/2,letter[1]-text.get_height()/2))
+        
+    window.blit(images[status],(150,100))
+    pygame.display.update()
+
+
+
+white = (255,255,255)
+black = (0,0,0)
+font = pygame.font.Font('freesansbold.ttf', 20)
 
 images=[]
 for i in range(7):
     image= pygame.image.load("images/hangman"+str(i)+".png")
     images.append(image)
+
 status = 0
+radius = 20
+gap = 15
+letters=[]
+start_x = round((800 -(radius*2+gap)*13)/2)
+start_y = 400
+A_asci = 65
+
+for i in range(26):
+    x = start_x + gap*2 +((radius *2 +gap)*(i%13))
+    y = start_y + ((i//13)) * (gap+radius*2)
+    letters.append([x,y,chr(A_asci+i)])
+
+
 
 while True:
     
@@ -33,6 +62,4 @@ while True:
             
         
         
-    window.fill(white)
-    window.blit(images[status],(150,100))
-    pygame.display.update()
+    draw()
